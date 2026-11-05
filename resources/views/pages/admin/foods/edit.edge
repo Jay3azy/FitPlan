@@ -1,0 +1,144 @@
+@layouts.app({ title: 'Editar alimento' })
+  @page({ title: `Editar · ${food.name}` })
+    @let(treeJson = JSON.stringify(categoryTree.map((p) => ({
+      id: p.id,
+      name: p.name,
+      subcategories: p.subcategories.map((s) => ({ id: s.id, name: s.name })),
+    }))))
+    @let(resolvedCategoryId = old('categoryId') ?? food.categoryId)
+    @let(resolvedParentId = (categoryTree.find((p) => p.subcategories.some((s) => String(s.id) === String(resolvedCategoryId))) ?? {}).id ?? '')
+    @let(selectedAllergenIds = food.allergens.map((a) => String(a.id)))
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel" style="max-width: 680px;">
+          @form({ route: 'admin.foods.update', routeParams: { id: food.id }, method: 'PUT' })
+            <script id="categoryTreeData" type="application/json">{{{ treeJson }}}</script>
+            <div
+              x-data="{
+                tree: JSON.parse(document.getElementById('categoryTreeData').textContent),
+                parentId: {{{ resolvedParentId ? `'${resolvedParentId}'` : `''` }}},
+                categoryId: {{{ resolvedCategoryId ? `'${resolvedCategoryId}'` : `''` }}},
+                get subcategories() {
+                  const parent = this.tree.find((p) => String(p.id) === String(this.parentId))
+                  return parent ? parent.subcategories : []
+                },
+              }"
+            >
+              <div class="form-grid">
+                <div class="field">
+                  <label class="field__label" for="parentCategoryUi">Categoría padre</label>
+                  <select
+                    id="parentCategoryUi"
+                    class="field__input"
+                    x-model="parentId"
+                    x-on:change="categoryId = ''"
+                  >
+                    <option value="">Selecciona una categoría...</option>
+                    <template x-for="p in tree" :key="p.id">
+                      <option :value="p.id" x-text="p.name"></option>
+                    </template>
+                  </select>
+                  <p class="field__hint">Elige primero el grupo (ej. Proteínas); abajo aparecen sus subcategorías.</p>
+                </div>
+
+                @field.root({ name: 'categoryId' })
+                  @!field.label({ text: 'Subcategoría' })
+                  <select
+                    name="{{ $context.name }}"
+                    id="{{ $context.id }}"
+                    class="field__input"
+                    x-model="categoryId"
+                    aria-describedby="{{ $context.hasErrors ? `${$context.id}-error` : '' }}"
+                  >
+                    <option value="">Selecciona primero la categoría padre...</option>
+                    <template x-for="sub in subcategories" :key="sub.id">
+                      <option :value="sub.id" x-text="sub.name"></option>
+                    </template>
+                  </select>
+                  @!field.error()
+                @end
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-top: 16px;">
+              @field.root({ name: 'code' })
+                @!field.label({ text: 'Código' })
+                @!input.control({ type: 'text', value: food.code, maxlength: 20 })
+                @!field.error()
+              @end
+              @field.root({ name: 'name' })
+                @!field.label({ text: 'Nombre' })
+                @!input.control({ type: 'text', value: food.name })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'calories' })
+                @!field.label({ text: 'Calorías (kcal / 100g)' })
+                @!input.control({ type: 'number', step: '0.01', min: '0', value: food.calories })
+                @!field.error()
+              @end
+              @field.root({ name: 'protein' })
+                @!field.label({ text: 'Proteína (g / 100g)' })
+                @!input.control({ type: 'number', step: '0.01', min: '0', value: food.protein })
+                @!field.error()
+              @end
+              @field.root({ name: 'carbs' })
+                @!field.label({ text: 'Carbohidratos (g / 100g)' })
+                @!input.control({ type: 'number', step: '0.01', min: '0', value: food.carbs })
+                @!field.error()
+              @end
+              @field.root({ name: 'fat' })
+                @!field.label({ text: 'Grasa (g / 100g)' })
+                @!input.control({ type: 'number', step: '0.01', min: '0', value: food.fat })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'sodium' })
+                @!field.label({ text: 'Sodio (mg / 100g, opcional)' })
+                @!input.control({ type: 'number', step: '0.01', min: '0', value: food.sodium })
+                @!field.error()
+              @end
+              @field.root({ name: 'purines' })
+                @!field.label({ text: 'Purinas (mg / 100g, opcional)' })
+                @!input.control({ type: 'number', step: '0.01', min: '0', value: food.purines })
+                @!field.error()
+              @end
+            </div>
+
+            <div class="section">
+              <div class="section__header">
+                <p class="section__title">Alergias que contiene este alimento</p>
+                <p class="section__description">Se usa para excluirlo de la dieta de clientes con esas alergias.</p>
+              </div>
+              <div class="section__body">
+                <div class="checklist">
+                  @each(allergy in allergies)
+                    <label class="checklist__item">
+                      <input
+                        type="checkbox"
+                        name="allergenIds[]"
+                        value="{{ allergy.id }}"
+                        {{ selectedAllergenIds.includes(String(allergy.id)) ? 'checked' : '' }}
+                      />
+                      {{ allergy.name }}
+                    </label>
+                  @end
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              @!button({ text: 'Guardar cambios', type: 'submit', variant: 'primary' })
+              @link({ route: 'admin.foods.index', class: 'btn btn--secondary' })
+                Cancelar
+              @end
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

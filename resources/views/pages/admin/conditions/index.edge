@@ -1,0 +1,64 @@
+@layouts.app({ title: 'Condiciones médicas' })
+  @page({ title: 'Condiciones médicas', description: 'Topes diarios que el core respeta al generar la dieta semanal.' })
+    @slot('actions')
+      @link({ route: 'admin.conditions.create', class: 'btn btn--primary btn--sm' })
+        @svg('lucide:plus', { width: 15, height: 15 })
+        Nueva condición
+      @end
+    @end
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel">
+          @if(conditions.length === 0)
+            <div class="empty">
+              <div class="empty__mark">
+                @svg('lucide:heart-pulse', { width: 20, height: 20 })
+              </div>
+              <h1>Sin condiciones todavía</h1>
+              <p>Crea la primera (ej. Hipertensión) para empezar.</p>
+            </div>
+          @else
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Tope sodio (mg)</th>
+                    <th>Tope purinas (mg)</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @each(condition in conditions)
+                    <tr>
+                      <td class="mono">{{ condition.code }}</td>
+                      <td>{{ condition.name }}</td>
+                      <td>{{ condition.maxSodiumMg ?? '—' }}</td>
+                      <td>{{ condition.maxPurinesMg ?? '—' }}</td>
+                      <td>
+                        <div class="table__actions">
+                          @link({ route: 'admin.conditions.edit', routeParams: { id: condition.id }, class: 'btn btn--secondary btn--sm' })
+                            Editar
+                          @end
+                          @form({ route: 'admin.conditions.destroy', routeParams: { id: condition.id }, method: 'DELETE' })
+                            <button type="submit" class="btn btn--secondary btn--sm">
+                              @svg('lucide:trash-2', { width: 14, height: 14 })
+                            </button>
+                          @end
+                        </div>
+                      </td>
+                    </tr>
+                  @end
+                </tbody>
+              </table>
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

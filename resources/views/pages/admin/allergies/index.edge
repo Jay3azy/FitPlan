@@ -1,0 +1,62 @@
+@layouts.app({ title: 'Alergias' })
+  @page({ title: 'Alergias', description: 'El core excluye de la dieta los alimentos vinculados a cada alergia.' })
+    @slot('actions')
+      @link({ route: 'admin.allergies.create', class: 'btn btn--primary btn--sm' })
+        @svg('lucide:plus', { width: 15, height: 15 })
+        Nueva alergia
+      @end
+    @end
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel">
+          @if(allergies.length === 0)
+            <div class="empty">
+              <div class="empty__mark">
+                @svg('lucide:shield-alert', { width: 20, height: 20 })
+              </div>
+              <h1>Sin alergias todavía</h1>
+              <p>Crea la primera (ej. Gluten) para empezar.</p>
+            </div>
+          @else
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th class="wrap">Descripción</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @each(allergy in allergies)
+                    <tr>
+                      <td class="mono">{{ allergy.code }}</td>
+                      <td>{{ allergy.name }}</td>
+                      <td class="wrap">{{ allergy.description ?? '—' }}</td>
+                      <td>
+                        <div class="table__actions">
+                          @link({ route: 'admin.allergies.edit', routeParams: { id: allergy.id }, class: 'btn btn--secondary btn--sm' })
+                            Editar
+                          @end
+                          @form({ route: 'admin.allergies.destroy', routeParams: { id: allergy.id }, method: 'DELETE' })
+                            <button type="submit" class="btn btn--secondary btn--sm">
+                              @svg('lucide:trash-2', { width: 14, height: 14 })
+                            </button>
+                          @end
+                        </div>
+                      </td>
+                    </tr>
+                  @end
+                </tbody>
+              </table>
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

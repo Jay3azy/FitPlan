@@ -1,0 +1,64 @@
+@layouts.app({ title: 'Objetivos' })
+  @page({ title: 'Objetivos', description: 'Factores que el core usa para calcular calorías y proteína objetivo.' })
+    @slot('actions')
+      @link({ route: 'admin.objectives.create', class: 'btn btn--primary btn--sm' })
+        @svg('lucide:plus', { width: 15, height: 15 })
+        Nuevo objetivo
+      @end
+    @end
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel">
+          @if(objectives.length === 0)
+            <div class="empty">
+              <div class="empty__mark">
+                @svg('lucide:target', { width: 20, height: 20 })
+              </div>
+              <h1>Sin objetivos todavía</h1>
+              <p>Crea el primero (ej. Bajar de peso) para empezar.</p>
+            </div>
+          @else
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Factor calórico</th>
+                    <th>Proteína (g/kg)</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @each(objective in objectives)
+                    <tr>
+                      <td class="mono">{{ objective.code }}</td>
+                      <td>{{ objective.name }}</td>
+                      <td>{{ objective.calorieAdjustmentFactor }}×</td>
+                      <td>{{ objective.proteinFactorPerKg }} g/kg</td>
+                      <td>
+                        <div class="table__actions">
+                          @link({ route: 'admin.objectives.edit', routeParams: { id: objective.id }, class: 'btn btn--secondary btn--sm' })
+                            Editar
+                          @end
+                          @form({ route: 'admin.objectives.destroy', routeParams: { id: objective.id }, method: 'DELETE' })
+                            <button type="submit" class="btn btn--secondary btn--sm">
+                              @svg('lucide:trash-2', { width: 14, height: 14 })
+                            </button>
+                          @end
+                        </div>
+                      </td>
+                    </tr>
+                  @end
+                </tbody>
+              </table>
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

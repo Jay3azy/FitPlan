@@ -1,0 +1,53 @@
+@layouts.app({ title: 'Nueva categoría' })
+  @page({ title: 'Nueva categoría de alimentos' })
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel" style="max-width: 560px;">
+          @form({ route: 'admin.food_categories.store', method: 'POST' })
+            <div class="form-grid">
+              @field.root({ name: 'code' })
+                @!field.label({ text: 'Código' })
+                @!input.control({ type: 'text', placeholder: 'CARNES_ROJAS', maxlength: 20 })
+                @!field.error()
+              @end
+              @field.root({ name: 'name' })
+                @!field.label({ text: 'Nombre' })
+                @!input.control({ type: 'text', placeholder: 'Carnes rojas' })
+                @!field.error()
+              @end
+
+              <div class="form-grid--full">
+                @field.root({ name: 'parentCategoryId' })
+                  @!field.label({ text: 'Categoría padre' })
+                  @!select.control({
+                    options: [{ value: '', name: '— Es una categoría de nivel superior —' }].concat(
+                      parentOptions.map((p) => ({ value: p.id, name: p.name }))
+                    ),
+                  })
+                  @!field.error()
+                @end
+              </div>
+
+              <div class="form-grid--full">
+                @field.root({ name: 'description' })
+                  @!field.label({ text: 'Descripción (opcional)' })
+                  @!textarea.control({ placeholder: 'Res, cerdo, cordero...', rows: '3' })
+                  @!field.error()
+                @end
+              </div>
+            </div>
+
+            <div class="form-actions">
+              @!button({ text: 'Crear categoría', type: 'submit', variant: 'primary' })
+              @link({ route: 'admin.food_categories.index', class: 'btn btn--secondary' })
+                Cancelar
+              @end
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

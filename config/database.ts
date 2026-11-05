@@ -1,0 +1,38 @@
+import env from '#start/env'
+import { defineConfig } from '@adonisjs/lucid'
+
+const dbConfig = defineConfig({
+  /**
+   * Default connection used for all queries.
+   */
+  connection: 'pg',
+
+  /**
+   * Pretty-print SQL debug output in development logs.
+   */
+  prettyPrintDebugQueries: true,
+
+  connections: {
+    /**
+     * PostgreSQL connection.
+     */
+    pg: {
+      client: 'pg',
+      connection: {
+        host: env.get('DB_HOST'),
+        port: env.get('DB_PORT'),
+        user: env.get('DB_USER'),
+        password: env.get('DB_PASSWORD'),
+        database: env.get('DB_DATABASE'),
+        ssl: env.get('DB_SSL', false) ? { rejectUnauthorized: false } : false,
+      },
+      migrations: {
+        naturalSort: true,
+        paths: ['database/migrations'],
+      },
+      debug: false,
+    },
+  },
+})
+
+export default dbConfig

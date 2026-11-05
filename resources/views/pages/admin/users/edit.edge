@@ -1,0 +1,65 @@
+@layouts.app({ title: 'Editar usuario' })
+  @page({ title: `Editar · ${user.fullName}`, description: 'Deja la contraseña en blanco para no cambiarla.' })
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel" style="max-width: 640px;">
+          @form({ route: 'admin.users.update', routeParams: { id: user.id }, method: 'PUT' })
+            <div class="form-grid">
+              @field.root({ name: 'firstName' })
+                @!field.label({ text: 'Nombres' })
+                @!input.control({ type: 'text', value: user.firstName })
+                @!field.error()
+              @end
+              @field.root({ name: 'lastName' })
+                @!field.label({ text: 'Apellidos' })
+                @!input.control({ type: 'text', value: user.lastName })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'email' })
+                @!field.label({ text: 'Email' })
+                @!input.control({ type: 'email', value: user.email })
+                @!field.error()
+              @end
+              @field.root({ name: 'cedula' })
+                @!field.label({ text: 'Cédula' })
+                @!input.control({ type: 'text', value: user.cedula, maxlength: 10 })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'birthDate' })
+                @!field.label({ text: 'Fecha de nacimiento' })
+                @!input.control({ type: 'date', value: user.birthDate ? user.birthDate.toISODate() : '' })
+                @!field.error()
+              @end
+              @field.root({ name: 'roleId' })
+                @!field.label({ text: 'Rol' })
+                @!select.control({
+                  options: roles.map((r) => ({ value: r.id, name: r.name, isSelected: r.id === user.roleId })),
+                })
+                @!field.error()
+              @end
+
+              <div class="form-grid--full">
+                @field.root({ name: 'password' })
+                  @!field.label({ text: 'Nueva contraseña (opcional)' })
+                  @!input.control({ type: 'password', placeholder: 'Dejar en blanco para no cambiar', autocomplete: 'new-password' })
+                  @!field.error()
+                @end
+              </div>
+            </div>
+
+            <div class="form-actions">
+              @!button({ text: 'Guardar cambios', type: 'submit', variant: 'primary' })
+              @link({ route: 'admin.users.index', class: 'btn btn--secondary' })
+                Cancelar
+              @end
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

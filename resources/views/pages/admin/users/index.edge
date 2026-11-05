@@ -1,0 +1,80 @@
+@layouts.app({ title: 'Usuarios' })
+  @page({ title: 'Usuarios', description: 'Clientes, nutricionistas y administradores del sistema.' })
+    @slot('actions')
+      @link({ route: 'admin.users.create', class: 'btn btn--primary btn--sm' })
+        @svg('lucide:plus', { width: 15, height: 15 })
+        Nuevo usuario
+      @end
+    @end
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel">
+          @if(users.isEmpty)
+            <div class="empty">
+              <div class="empty__mark">
+                @svg('lucide:users', { width: 20, height: 20 })
+              </div>
+              <h1>Sin usuarios todavía</h1>
+              <p>Crea el primero para empezar a asignar dietas.</p>
+            </div>
+          @else
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Cédula</th>
+                    <th>Rol</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @each(user in users)
+                    <tr>
+                      <td>{{ user.fullName }}</td>
+                      <td>{{ user.email }}</td>
+                      <td class="mono">{{ user.cedula }}</td>
+                      <td>
+                        <span class="badge badge--accent">{{ user.role.name }}</span>
+                      </td>
+                      <td>
+                        <div class="table__actions">
+                          @link({ route: 'admin.users.edit', routeParams: { id: user.id }, class: 'btn btn--secondary btn--sm' })
+                            Editar
+                          @end
+                          @form({ route: 'admin.users.destroy', routeParams: { id: user.id }, method: 'DELETE' })
+                            <button type="submit" class="btn btn--secondary btn--sm">
+                              @svg('lucide:trash-2', { width: 14, height: 14 })
+                            </button>
+                          @end
+                        </div>
+                      </td>
+                    </tr>
+                  @end
+                </tbody>
+              </table>
+            </div>
+
+            @if(users.hasPages)
+              <div class="pagination">
+                <span>Página {{ users.currentPage }} de {{ users.lastPage }} · {{ users.total }} usuarios</span>
+                <div class="pagination__links">
+                  @if(users.currentPage > 1)
+                    <a href="{{ users.getUrl(users.currentPage - 1) }}" class="btn btn--secondary btn--sm">Anterior</a>
+                  @end
+                  @if(users.currentPage < users.lastPage)
+                    <a href="{{ users.getUrl(users.currentPage + 1) }}" class="btn btn--secondary btn--sm">Siguiente</a>
+                  @end
+                </div>
+              </div>
+            @end
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

@@ -1,0 +1,41 @@
+@layouts.app({ title: 'Editar alergia' })
+  @page({ title: `Editar · ${allergy.name}` })
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel" style="max-width: 560px;">
+          @form({ route: 'admin.allergies.update', routeParams: { id: allergy.id }, method: 'PUT' })
+            <div class="form-grid">
+              @field.root({ name: 'code' })
+                @!field.label({ text: 'Código' })
+                @!input.control({ type: 'text', value: allergy.code, maxlength: 20 })
+                @!field.error()
+              @end
+              @field.root({ name: 'name' })
+                @!field.label({ text: 'Nombre' })
+                @!input.control({ type: 'text', value: allergy.name })
+                @!field.error()
+              @end
+
+              <div class="form-grid--full">
+                @field.root({ name: 'description' })
+                  @!field.label({ text: 'Descripción (opcional)' })
+                  @!textarea.control({ value: allergy.description, rows: '3' })
+                  @!field.error()
+                @end
+              </div>
+            </div>
+
+            <div class="form-actions">
+              @!button({ text: 'Guardar cambios', type: 'submit', variant: 'primary' })
+              @link({ route: 'admin.allergies.index', class: 'btn btn--secondary' })
+                Cancelar
+              @end
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

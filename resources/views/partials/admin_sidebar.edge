@@ -1,0 +1,22 @@
+{{--
+  Navegación lateral de la Administración. Cada entrada corresponde a uno
+  de los 6 catálogos que alimentan al Core (NutriPlan). Se agregan según
+  se construye cada módulo.
+--}}
+@let(adminNav = [
+  { label: 'Usuarios', route: 'admin.users.index', icon: 'lucide:users' },
+  { label: 'Alimentos', route: 'admin.foods.index', icon: 'lucide:apple' },
+  { label: 'Categorías de alimentos', route: 'admin.food_categories.index', icon: 'lucide:layers' },
+  { label: 'Objetivos', route: 'admin.objectives.index', icon: 'lucide:target' },
+  { label: 'Condiciones médicas', route: 'admin.conditions.index', icon: 'lucide:heart-pulse' },
+  { label: 'Alergias', route: 'admin.allergies.index', icon: 'lucide:shield-alert' },
+])
+
+<nav class="sidebar-layout__nav">
+  @each(item in adminNav)
+    @navLink({ route: item.route, class: 'sidebar-layout__item' })
+      @svg(item.icon, { width: 15, height: 15 })
+      {{ item.label }}
+    @end
+  @end
+</nav>

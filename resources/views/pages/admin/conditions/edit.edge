@@ -1,0 +1,52 @@
+@layouts.app({ title: 'Editar condición' })
+  @page({ title: `Editar · ${condition.name}` })
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel" style="max-width: 560px;">
+          @form({ route: 'admin.conditions.update', routeParams: { id: condition.id }, method: 'PUT' })
+            <div class="form-grid">
+              @field.root({ name: 'code' })
+                @!field.label({ text: 'Código' })
+                @!input.control({ type: 'text', value: condition.code, maxlength: 20 })
+                @!field.error()
+              @end
+              @field.root({ name: 'name' })
+                @!field.label({ text: 'Nombre' })
+                @!input.control({ type: 'text', value: condition.name })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'maxSodiumMg' })
+                @!field.label({ text: 'Tope de sodio diario (mg, opcional)' })
+                @!input.control({ type: 'number', step: '1', min: '0', value: condition.maxSodiumMg })
+                @!field.error()
+              @end
+              @field.root({ name: 'maxPurinesMg' })
+                @!field.label({ text: 'Tope de purinas diario (mg, opcional)' })
+                @!input.control({ type: 'number', step: '1', min: '0', value: condition.maxPurinesMg })
+                @!field.error()
+              @end
+
+              <div class="form-grid--full">
+                @field.root({ name: 'description' })
+                  @!field.label({ text: 'Descripción (opcional)' })
+                  @!textarea.control({ value: condition.description, rows: '3' })
+                  @!field.error()
+                @end
+              </div>
+            </div>
+
+            <div class="form-actions">
+              @!button({ text: 'Guardar cambios', type: 'submit', variant: 'primary' })
+              @link({ route: 'admin.conditions.index', class: 'btn btn--secondary' })
+                Cancelar
+              @end
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

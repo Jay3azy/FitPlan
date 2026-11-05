@@ -1,0 +1,65 @@
+@layouts.app({ title: 'Nuevo usuario' })
+  @page({ title: 'Nuevo usuario', description: 'La cédula se valida en el servidor antes de guardarse.' })
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel" style="max-width: 640px;">
+          @form({ route: 'admin.users.store', method: 'POST' })
+            <div class="form-grid">
+              @field.root({ name: 'firstName' })
+                @!field.label({ text: 'Nombres' })
+                @!input.control({ type: 'text', placeholder: 'José' })
+                @!field.error()
+              @end
+              @field.root({ name: 'lastName' })
+                @!field.label({ text: 'Apellidos' })
+                @!input.control({ type: 'text', placeholder: 'Ortiz' })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'email' })
+                @!field.label({ text: 'Email' })
+                @!input.control({ type: 'email', placeholder: 'correo@ejemplo.com' })
+                @!field.error()
+              @end
+              @field.root({ name: 'cedula' })
+                @!field.label({ text: 'Cédula' })
+                @!input.control({ type: 'text', placeholder: '1712345678', maxlength: 10 })
+                @!field.error()
+              @end
+
+              @field.root({ name: 'birthDate' })
+                @!field.label({ text: 'Fecha de nacimiento' })
+                @!input.control({ type: 'date' })
+                @!field.error()
+              @end
+              @field.root({ name: 'roleId' })
+                @!field.label({ text: 'Rol' })
+                @!select.control({
+                  options: roles.map((r) => ({ value: r.id, name: r.name })),
+                })
+                @!field.error()
+              @end
+
+              <div class="form-grid--full">
+                @field.root({ name: 'password' })
+                  @!field.label({ text: 'Contraseña' })
+                  @!input.control({ type: 'password', placeholder: 'Mínimo 8 caracteres', autocomplete: 'new-password' })
+                  @!field.error()
+                @end
+              </div>
+            </div>
+
+            <div class="form-actions">
+              @!button({ text: 'Crear usuario', type: 'submit', variant: 'primary' })
+              @link({ route: 'admin.users.index', class: 'btn btn--secondary' })
+                Cancelar
+              @end
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

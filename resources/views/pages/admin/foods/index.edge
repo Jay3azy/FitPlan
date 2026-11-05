@@ -1,0 +1,92 @@
+@layouts.app({ title: 'Alimentos' })
+  @page({ title: 'Alimentos', description: 'Macros y topes que el core compara al armar la dieta semanal.' })
+    @slot('actions')
+      @link({ route: 'admin.foods.create', class: 'btn btn--primary btn--sm' })
+        @svg('lucide:plus', { width: 15, height: 15 })
+        Nuevo alimento
+      @end
+    @end
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel">
+          @if(foods.isEmpty)
+            <div class="empty">
+              <div class="empty__mark">
+                @svg('lucide:apple', { width: 20, height: 20 })
+              </div>
+              <h1>Sin alimentos todavía</h1>
+              <p>Crea el primero para empezar a armar dietas.</p>
+            </div>
+          @else
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Kcal</th>
+                    <th>Prot.</th>
+                    <th>Carb.</th>
+                    <th>Grasa</th>
+                    <th>Alergias</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @each(food in foods)
+                    <tr>
+                      <td>{{ food.name }}</td>
+                      <td><span class="badge badge--accent">{{ food.category.name }}</span></td>
+                      <td>{{ food.calories }}</td>
+                      <td>{{ food.protein }}g</td>
+                      <td>{{ food.carbs }}g</td>
+                      <td>{{ food.fat }}g</td>
+                      <td class="wrap">
+                        @if(food.allergens.length === 0)
+                          <span style="color: var(--subtle);">—</span>
+                        @else
+                          @each(allergen in food.allergens)
+                            <span class="badge">{{ allergen.name }}</span>
+                          @end
+                        @end
+                      </td>
+                      <td>
+                        <div class="table__actions">
+                          @link({ route: 'admin.foods.edit', routeParams: { id: food.id }, class: 'btn btn--secondary btn--sm' })
+                            Editar
+                          @end
+                          @form({ route: 'admin.foods.destroy', routeParams: { id: food.id }, method: 'DELETE' })
+                            <button type="submit" class="btn btn--secondary btn--sm">
+                              @svg('lucide:trash-2', { width: 14, height: 14 })
+                            </button>
+                          @end
+                        </div>
+                      </td>
+                    </tr>
+                  @end
+                </tbody>
+              </table>
+            </div>
+
+            @if(foods.hasPages)
+              <div class="pagination">
+                <span>Página {{ foods.currentPage }} de {{ foods.lastPage }} · {{ foods.total }} alimentos</span>
+                <div class="pagination__links">
+                  @if(foods.currentPage > 1)
+                    <a href="{{ foods.getUrl(foods.currentPage - 1) }}" class="btn btn--secondary btn--sm">Anterior</a>
+                  @end
+                  @if(foods.currentPage < foods.lastPage)
+                    <a href="{{ foods.getUrl(foods.currentPage + 1) }}" class="btn btn--secondary btn--sm">Siguiente</a>
+                  @end
+                </div>
+              </div>
+            @end
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end

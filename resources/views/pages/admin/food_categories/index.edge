@@ -1,0 +1,81 @@
+@layouts.app({ title: 'Categorías de alimentos' })
+  @page({ title: 'Categorías de alimentos', description: 'Jerarquía padre → subcategoría que alimenta el formulario de Alimentos.' })
+    @slot('actions')
+      @link({ route: 'admin.food_categories.create', class: 'btn btn--primary btn--sm' })
+        @svg('lucide:plus', { width: 15, height: 15 })
+        Nueva categoría
+      @end
+    @end
+
+    <div class="sidebar-layout">
+      @include('partials/admin_sidebar')
+
+      <div class="sidebar-layout__content">
+        <div class="panel">
+          @if(parents.length === 0)
+            <div class="empty">
+              <div class="empty__mark">
+                @svg('lucide:layers', { width: 20, height: 20 })
+              </div>
+              <h1>Sin categorías todavía</h1>
+              <p>Crea la primera categoría de nivel superior (ej. Proteínas).</p>
+            </div>
+          @else
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Categoría / Subcategoría</th>
+                    <th>Código</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @each(parent in parents)
+                    <tr>
+                      <td><strong>{{ parent.name }}</strong></td>
+                      <td class="mono">{{ parent.code }}</td>
+                      <td>
+                        <div class="table__actions">
+                          @link({ route: 'admin.food_categories.edit', routeParams: { id: parent.id }, class: 'btn btn--secondary btn--sm' })
+                            Editar
+                          @end
+                          @form({ route: 'admin.food_categories.destroy', routeParams: { id: parent.id }, method: 'DELETE' })
+                            <button type="submit" class="btn btn--secondary btn--sm">
+                              @svg('lucide:trash-2', { width: 14, height: 14 })
+                            </button>
+                          @end
+                        </div>
+                      </td>
+                    </tr>
+                    @each(child in parent.subcategories)
+                      <tr>
+                        <td style="padding-left: 32px; color: var(--muted);">
+                          @svg('lucide:corner-down-right', { width: 13, height: 13 })
+                          {{ child.name }}
+                        </td>
+                        <td class="mono">{{ child.code }}</td>
+                        <td>
+                          <div class="table__actions">
+                            @link({ route: 'admin.food_categories.edit', routeParams: { id: child.id }, class: 'btn btn--secondary btn--sm' })
+                              Editar
+                            @end
+                            @form({ route: 'admin.food_categories.destroy', routeParams: { id: child.id }, method: 'DELETE' })
+                              <button type="submit" class="btn btn--secondary btn--sm">
+                                @svg('lucide:trash-2', { width: 14, height: 14 })
+                              </button>
+                            @end
+                          </div>
+                        </td>
+                      </tr>
+                    @end
+                  @end
+                </tbody>
+              </table>
+            </div>
+          @end
+        </div>
+      </div>
+    </div>
+  @end
+@end
