@@ -3,7 +3,7 @@ services:
     name: nutriplan-admin
     runtime: node
     plan: free
-    buildCommand: npm ci --include=dev && node ace build
+    buildCommand: npm ci --include=dev && node ace codegen && node ace build
     startCommand: cd build && npm ci --omit=dev && node ace.js migration:run --force && node ace.js db:seed && node bin/server.js
     envVars:
       - key: NODE_ENV
