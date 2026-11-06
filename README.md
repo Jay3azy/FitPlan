@@ -138,7 +138,49 @@ admin de arriba y entra a **Administración** en la barra de navegación.
 
 ## Despliegue
 
-_Pendiente — se agrega el enlace una vez desplegado en Render._
+Desplegado en **Render** (Web Service, Node) con base de datos
+**PostgreSQL en Neon**, igual que `inventario-mvc`.
+
+**URL:** _pendiente — se agrega apenas termine el deploy._
+
+El repo incluye [`render.yaml`](render.yaml) con el build/start ya
+configurados:
+
+```
+buildCommand: npm ci && node ace build
+startCommand: cd build && npm ci --omit=dev && node ace.js migration:run --force && node ace.js db:seed && node bin/server.js
+```
+
+El `startCommand` corre las migraciones y los seeders en cada arranque
+(son idempotentes: `updateOrCreateMany` no duplica nada), así la base de
+datos de Neon siempre queda con la estructura y los datos de demo
+listos.
+
+### Pasos para desplegar
+
+1. **Neon** (https://neon.tech): crear un proyecto nuevo → copiar los
+   datos de conexión (host, usuario, contraseña, nombre de la base,
+   puerto 5432). Neon requiere SSL.
+2. **Render** (https://render.com), con GitHub ya conectado:
+   **New → Blueprint** → seleccionar el repo `Jay3azy/FitPlan` → Render
+   detecta `render.yaml` automáticamente.
+3. Completar las variables de entorno marcadas como privadas en el
+   blueprint:
+
+   | Variable | Valor |
+   |---|---|
+   | `APP_KEY` | `wxY9fqg-QDhj0XYRNAMcdcVdX-PtKJWh` (o generar una propia con `node ace generate:key --show`) |
+   | `APP_URL` | la URL pública que Render asigna al servicio (ej. `https://nutriplan-admin.onrender.com`) |
+   | `DB_HOST` | host de Neon |
+   | `DB_USER` | usuario de Neon |
+   | `DB_PASSWORD` | contraseña de Neon |
+   | `DB_DATABASE` | nombre de la base en Neon |
+
+   `DB_PORT=5432` y `DB_SSL=true` ya vienen definidos en el blueprint.
+4. Deploy. Render corre el build, las migraciones y los seeders
+   automáticamente; cuando termine, la app queda disponible en la URL
+   del servicio con el mismo usuario admin de demo de la tabla de
+   arriba.
 
 ## Video explicativo
 

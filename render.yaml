@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: nutriplan-admin
+    runtime: node
+    plan: free
+    buildCommand: npm ci && node ace build
+    startCommand: cd build && npm ci --omit=dev && node ace.js migration:run --force && node ace.js db:seed && node bin/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 3333
+      - key: LOG_LEVEL
+        value: info
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_SSL
+        value: true
