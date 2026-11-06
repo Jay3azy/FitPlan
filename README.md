@@ -141,7 +141,7 @@ admin de arriba y entra a **Administración** en la barra de navegación.
 Desplegado en **Render** (Web Service, Node) con base de datos
 **PostgreSQL en Neon**, igual que `inventario-mvc`.
 
-**URL:** _pendiente — se agrega apenas termine el deploy._
+**URL:** https://nutriplan-admin-28dl.onrender.com
 
 El repo incluye [`render.yaml`](render.yaml) con el build/start ya
 configurados:
